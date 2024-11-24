@@ -3,6 +3,7 @@ import os
 import boto3
 from pytube import YouTube
 from youtube_comment_downloader import *
+from youtube_transcript_api import YouTubeTranscriptApi
 import logging
 from datetime import datetime
 
@@ -69,6 +70,17 @@ def get_video_comments(url, max_comments=100):
         logger.error(f"Error fetching video comments: {str(e)}")
         return comments
 
+def get_video_transcript(video_id):
+    """fetch video transcript"""
+    try:
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        # Just concatenate all text pieces with spaces
+        full_text = ' '.join(entry['text'] for entry in transcript_list)
+        return full_text
+    except Exception as e:
+        logger.warning(f"Error fetching transcript: {str(e)}")
+        return None
+
 def save_to_s3(video_id, data):
     """save the collected data to s3"""
     try:
@@ -112,11 +124,14 @@ def lambda_handler(event, context):
         
         # fetch video comments
         video_comments = get_video_comments(video_url)
+
+        video_transcript = get_video_transcript(video_id)
         
         # combine all data
         video_data = {
             'metadata': video_metadata,
             'comments': video_comments,
+            'transcript': video_transcript,
             'collected_at': datetime.utcnow().isoformat()
         }
         
