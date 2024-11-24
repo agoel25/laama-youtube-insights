@@ -1,0 +1,4 @@
+boto3
+pytube
+youtube-comment-downloader
+youtube-transcript-api

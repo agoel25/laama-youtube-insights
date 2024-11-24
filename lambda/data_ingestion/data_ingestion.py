@@ -1,5 +1,4 @@
 import json
-import os
 import boto3
 from pytube import YouTube
 from youtube_comment_downloader import *
@@ -13,8 +12,8 @@ logger.setLevel(logging.INFO)
 s3 = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 
-S3_BUCKET = 'S3_NAME'
-DYNAMODB_TABLE = 'DYNAMO_TABLE_NMAE'
+S3_BUCKET = '436-transcriptions'
+DYNAMODB_TABLE = '436-youtube-data'
 
 def check_existing_analysis(video_id):
     """check if video analysis already exists in the dynamo db table"""
